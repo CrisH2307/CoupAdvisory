@@ -1,0 +1,38 @@
+# Python caches / build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+coup_detection.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual env
+.venv/
+venv/
+
+# OS
+.DS_Store
+
+# Local-only docs / config
+CLAUDE.md
+pytest.ini
+
+# Excluded source areas (per project scope)
+tests/
+server/tests/
+data/
+vision/
+captures/
+model/
+runs/
+documents/
+
+# Notebook outputs / training artifacts
+jupyterNotebook/runs/
+jupyterNotebook/training_result/
+
+# Web build artifacts
+web/node_modules/
+web/dist/
+web/tsconfig.tsbuildinfo

@@ -156,7 +156,29 @@ Generate visual graphs from report artifacts:
 python -m coup.research.plot --report-dir data/research/report --out data/research/plots
 ```
 
-## Run Streamlit
+## Run the new FastAPI + React UI
+
+```bash
+# Terminal 1 — API
+source .venv/bin/activate
+uvicorn server.main:app --reload
+
+# Terminal 2 — frontend
+cd web && npm install && npm run dev
+# open http://localhost:5173
+```
+
+Three tabs:
+
+- **Match replay** — load `data/sample_game.json` or any event-schema JSON and step through it.
+- **Manual play** — pick 2–6 player names, then drive the game turn-by-turn via the `TurnBuilder`. Apply, undo, or reset events against a live session; the advisor card updates after every applied claim.
+- **Simulation lab** — batch-run sims via the `/api/sim/run` endpoint.
+
+Key API routes: `/api/health`, `/api/games`, `/api/games/{sid}/events|replay|reset`,
+`/api/advisor/recommend`, `/api/sim/run`, `/api/sim/bots`, `/api/research/metrics`.
+Full OpenAPI schema at `/docs`.
+
+## Run legacy Streamlit (retired)
 
 ```bash
 streamlit run app/streamlit_app.py
@@ -249,3 +271,15 @@ ruff check .
 # NOTE, debug for CV, Vision Capture and OCR, make sure the image can present the right one
 # NOTE:  STRATEGY OPTIMIZATION FOR EACH ROUND, AND EACH CHALLENGING in order to advise players with few of strategy
 
+
+# WHY TO CHOOSE COUP, WHAT MAKES IT SPECIAL -> USE GAME THOERY, NASH, DILLEMA. put it in introduction
+# BASE LINE, imrpove random point
+# NOTHING TO COMPARE, SO IT DOESNT TELL THAT THE MODEL IS GOOD, IMPROVE THIS
+# IF yes, we can try and explore some of the state - Thompson Sampling for the bandit
+
+
+# Change April 18th
+# Fix the manual edit, like who challenge who button every single time, for example P2 select steal, and then model came up like is anybody challenge or something Manually revealed/challenge button the simulation, by edit it.
+# Manually set the player as the main character, for example me as P2 or P3, maybe before the game I will be Pth and then start the game. And me, ith Player who will try to observe the game
+# And remember, if a player exchanges card, the probability might be distrubed, I dont really know
+# If any plan or future improvement, please let me know or ask me
