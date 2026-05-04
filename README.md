@@ -2,6 +2,9 @@
 
 Observer + advisor tool for the game Coup. It replays public events, tracks role probabilities, and recommends challenges.
 
+## Reading
+Please have a look at `documents/paper.pdf`
+
 ## Install
 
 ```bash
