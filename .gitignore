@@ -26,7 +26,6 @@ vision/
 captures/
 model/
 runs/
-documents/
 
 # Notebook outputs / training artifacts
 jupyterNotebook/runs/

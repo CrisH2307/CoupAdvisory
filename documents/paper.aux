@@ -1,0 +1,161 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Game Theory Motivation}{1}{subsection.1.1}\protected@file@percent }
+\citation{kaelbling1998pomdp}
+\citation{watkins1992qlearning}
+\citation{ross2011dagger}
+\citation{osa2018imitation}
+\citation{breiman2001rf}
+\citation{mnih2015dqn}
+\citation{lin1992replay}
+\citation{levine2020offline}
+\citation{sokolova2009metrics}
+\citation{fawcett2006roc}
+\citation{niculescu2005calibration}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Framework and Methodology}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}POMDP Formulation}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Terminology}{2}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Exploration and Exploitation Across Decision Layers}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Belief layer.}{3}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Advisor layer.}{3}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Learning layer.}{3}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Overall Framework}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overall framework diagram.}}{3}{figure.caption.7}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:framework-diagram}{{1}{3}{Overall framework diagram}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Round Strategy Optimization Loop}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Round-by-round strategy optimization loop.}}{4}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:strategy-loop}{{2}{4}{Round-by-round strategy optimization loop}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Challenge Decision Logic}{4}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Belief Update Logic}{4}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Bayesian Belief Formulation}{4}{subsection.3.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Challenge decision logic used by the advisor.}}{5}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:challenge-logic}{{3}{5}{Challenge decision logic used by the advisor}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Hidden-role belief update pipeline (Standard vs Strict mode).}}{6}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:belief-diagram}{{4}{6}{Hidden-role belief update pipeline (Standard vs Strict mode)}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Coin Pressure and Legal Action Constraints}{7}{subsection.3.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}Advisor/Agent Reasoning in a Bluff Game}{7}{subsection.3.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10}Advisor Modes and Uncertainty Communication}{7}{subsection.3.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11}Simple Bluff Decision Rule in Practical}{8}{subsection.3.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.12}Risk-Asymmetric Bluff Behavior}{8}{subsection.3.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scenario:}{8}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Strategic Sacrifice and Belief Manipulation:}{8}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.13}Thompson Sampling Extension for Uncertain Decision-Making}{9}{subsection.3.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.14}Expected Value Interpretation}{9}{subsection.3.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.15}Relation to Poker-Style Imperfect Information}{9}{subsection.3.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.16}Single-Turn Interaction}{10}{subsection.3.16}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Single-turn sequence with optional block/challenge branches.}}{10}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:turn-sequence}{{5}{10}{Single-turn sequence with optional block/challenge branches}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.17}Example Game Flow}{10}{subsection.3.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Initial State}{10}{section*.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Example player state at the start of the example game flow.}}{10}{table.caption.15}\protected@file@percent }
+\newlabel{tab:example-player-state}{{1}{10}{Example player state at the start of the example game flow}{table.caption.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Initial belief state over hidden roles.}}{11}{table.caption.16}\protected@file@percent }
+\newlabel{tab:belief-initial}{{2}{11}{Initial belief state over hidden roles}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Step 1: Action and Claim}{11}{section*.17}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces State after Player A claims Duke and takes Tax.}}{11}{table.caption.18}\protected@file@percent }
+\newlabel{tab:state-duke}{{3}{11}{State after Player A claims Duke and takes Tax}{table.caption.18}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Belief state after Player A claims Duke.}}{11}{table.caption.19}\protected@file@percent }
+\newlabel{tab:belief-duke}{{4}{11}{Belief state after Player A claims Duke}{table.caption.19}{}}
+\@writefile{toc}{\contentsline {paragraph}{Advisor Observation}{11}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Belief Update}{11}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Step 2: Challenge Decision}{12}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Step 3: Outcome}{12}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Step 4: Later Action}{12}{section*.24}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces State after Player A claims Assassin and targets Player B.}}{12}{table.caption.25}\protected@file@percent }
+\newlabel{tab:state-assassin}{{5}{12}{State after Player A claims Assassin and targets Player B}{table.caption.25}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Belief state after Player A claims Assassin.}}{12}{table.caption.26}\protected@file@percent }
+\newlabel{tab:belief-assassin}{{6}{12}{Belief state after Player A claims Assassin}{table.caption.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{Updated Reasoning}{12}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Final Decision}{13}{section*.28}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Example sequence of events and advisor reasoning}}{13}{table.caption.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.18}Training and Evaluation Pipeline}{13}{subsection.3.18}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Training and evaluation pipeline for policy models.}}{13}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:train-eval-pipeline}{{6}{13}{Training and evaluation pipeline for policy models}{figure.caption.30}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.19}Stronger Baseline Agents}{13}{subsection.3.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baseline 1: Rule-Based Legal-Priority Agent}{13}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baseline 2: Belief-Based Expected-Value Agent (Non-Learning)}{13}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baseline 3: Public-State Heuristic Pressure Agent}{14}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.20}User Interaction Flow}{14}{subsection.3.20}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces UI flow for loading events, replay, and advisor output.}}{14}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:ui-flow}{{7}{14}{UI flow for loading events, replay, and advisor output}{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.21}Implementation Snippets (Notebook-Friendly)}{14}{subsection.3.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{16}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Locked Final Rerun Artifacts}{16}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Primary Experiment Design Matrix (Balanced)}{16}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Primary balanced matrix (seed $\times $ condition).}}{16}{table.caption.35}\protected@file@percent }
+\newlabel{tab:exp-matrix-primary}{{8}{16}{Primary balanced matrix (seed $\times $ condition)}{table.caption.35}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Metrics}{17}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Exploration-Mode Ablation}{17}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Evaluation Protocol Beyond Random Comparison}{17}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scenario-Based Evaluation}{17}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Opponent-Type Robustness}{17}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decision-Quality Metrics}{17}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{18}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Advisor Multi-Seed Results}{18}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:advisor-multiseed}{{5.1}{18}{Advisor Multi-Seed Results}{subsection.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Advisor metrics across seed-condition cells (mean, std, and 95\% CI).}}{18}{table.caption.39}\protected@file@percent }
+\newlabel{tab:advisor-main}{{9}{18}{Advisor metrics across seed-condition cells (mean, std, and 95\% CI)}{table.caption.39}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Bot-Mix Sensitivity}{18}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Condition comparison by bot mix (mean across seeds).}}{18}{table.caption.40}\protected@file@percent }
+\newlabel{tab:botmix}{{10}{18}{Condition comparison by bot mix (mean across seeds)}{table.caption.40}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Weighted ranking score by condition.}}{18}{table.caption.41}\protected@file@percent }
+\newlabel{tab:ranking}{{11}{18}{Weighted ranking score by condition}{table.caption.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ablation: Belief Mode}{18}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Standard vs strict no-duplicate-hand belief mode.}}{18}{table.caption.42}\protected@file@percent }
+\newlabel{tab:ablation-belief}{{12}{18}{Standard vs strict no-duplicate-hand belief mode}{table.caption.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Ablation: Advisor On vs Off}{18}{subsection.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Advisor policy ablation (off = never challenge baseline).}}{18}{table.caption.43}\protected@file@percent }
+\newlabel{tab:ablation-advisor}{{13}{18}{Advisor policy ablation (off = never challenge baseline)}{table.caption.43}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Confidence and Significance Notes}{19}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Policy Benchmark}{19}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:policy-benchmark}{{5.6}{19}{Policy Benchmark}{subsection.5.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Policy benchmark under the original shaped reward ($\Delta $coins $+\ \Delta $alive $+$ action-match).}}{19}{table.caption.44}\protected@file@percent }
+\newlabel{tab:policy}{{14}{19}{Policy benchmark under the original shaped reward ($\Delta $coins $+\ \Delta $alive $+$ action-match)}{table.caption.44}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Policy benchmark under win-aligned reward ($+1$ when chosen action matches the winner's logged action, $0$ otherwise). 100 games, 1000 training episodes for DQN.}}{19}{table.caption.45}\protected@file@percent }
+\newlabel{tab:policy-v2}{{15}{19}{Policy benchmark under win-aligned reward ($+1$ when chosen action matches the winner's logged action, $0$ otherwise). 100 games, 1000 training episodes for DQN}{table.caption.45}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces DQN training summary.}}{20}{table.caption.46}\protected@file@percent }
+\newlabel{tab:train-summary}{{16}{20}{DQN training summary}{table.caption.46}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Result Figures}{20}{subsection.5.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Advisor multiseed metrics from the locked final rerun.}}{20}{figure.caption.47}\protected@file@percent }
+\newlabel{fig:advisor-artifact}{{8}{20}{Advisor multiseed metrics from the locked final rerun}{figure.caption.47}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Bot-mix comparison from the locked final rerun.}}{21}{figure.caption.48}\protected@file@percent }
+\newlabel{fig:botmix-artifact}{{9}{21}{Bot-mix comparison from the locked final rerun}{figure.caption.48}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces DQN reward curve from the locked final rerun (original shaped reward, 100 episodes). The rolling mean is flat, consistent with Table~\ref {tab:policy}.}}{21}{figure.caption.49}\protected@file@percent }
+\newlabel{fig:dqn-curve}{{10}{21}{DQN reward curve from the locked final rerun (original shaped reward, 100 episodes). The rolling mean is flat, consistent with Table~\ref {tab:policy}}{figure.caption.49}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces DQN reward curve under win-aligned reward (1000 episodes). The rolling mean rises from ${\sim }1.5$ at episode 20 to ${\sim }5.9$ by episode 1000, confirming the policy is learning to match winner actions. Corresponds to Table~\ref {tab:policy-v2}.}}{22}{figure.caption.50}\protected@file@percent }
+\newlabel{fig:dqn-curve-v2}{{11}{22}{DQN reward curve under win-aligned reward (1000 episodes). The rolling mean rises from ${\sim }1.5$ at episode 20 to ${\sim }5.9$ by episode 1000, confirming the policy is learning to match winner actions. Corresponds to Table~\ref {tab:policy-v2}}{figure.caption.50}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Policy benchmark summary from the locked final rerun.}}{22}{figure.caption.51}\protected@file@percent }
+\newlabel{fig:policy-artifact}{{12}{22}{Policy benchmark summary from the locked final rerun}{figure.caption.51}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Exploration-Mode Comparison}{22}{subsection.5.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Reward curves, action-entropy curves, and action-visitation histograms under $\varepsilon $-greedy and Boltzmann softmax exploration. Source: \texttt  {jupyterNotebook/exploration\_modes.ipynb}.}}{23}{figure.caption.52}\protected@file@percent }
+\newlabel{fig:exploration-modes}{{13}{23}{Reward curves, action-entropy curves, and action-visitation histograms under $\varepsilon $-greedy and Boltzmann softmax exploration. Source: \texttt {jupyterNotebook/exploration\_modes.ipynb}}{figure.caption.52}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{23}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Error Analysis with Concrete Cases}{23}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Representative failure cases from \texttt  {../data/research/final\_runs/20260411\_234502}.}}{24}{table.caption.53}\protected@file@percent }
+\newlabel{tab:error-cases}{{17}{24}{Representative failure cases from \texttt {\artifactdirtext }}{table.caption.53}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Challenges and Limitations}{24}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Partial observability and belief ambiguity.}{24}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sequential interaction complexity.}{24}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Offline learning constraints.}{24}{section*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Simplified opponent models.}{25}{section*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decision rule limitations.}{25}{section*.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Evaluation scope.}{25}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{25}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Future Work}{25}{section.9}\protected@file@percent }
+\bibcite{kaelbling1998pomdp}{1}
+\bibcite{watkins1992qlearning}{2}
+\bibcite{breiman2001rf}{3}
+\bibcite{ross2011dagger}{4}
+\bibcite{osa2018imitation}{5}
+\bibcite{mnih2015dqn}{6}
+\bibcite{lin1992replay}{7}
+\bibcite{levine2020offline}{8}
+\bibcite{fawcett2006roc}{9}
+\bibcite{niculescu2005calibration}{10}
+\bibcite{sokolova2009metrics}{11}
+\gdef \@abspage@last{28}
