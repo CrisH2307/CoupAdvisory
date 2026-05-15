@@ -269,20 +269,3 @@ brew install tesseract
 pytest
 ruff check .
 ```
-
-
-# NOTE, debug for CV, Vision Capture and OCR, make sure the image can present the right one
-# NOTE:  STRATEGY OPTIMIZATION FOR EACH ROUND, AND EACH CHALLENGING in order to advise players with few of strategy
-
-
-# WHY TO CHOOSE COUP, WHAT MAKES IT SPECIAL -> USE GAME THOERY, NASH, DILLEMA. put it in introduction
-# BASE LINE, imrpove random point
-# NOTHING TO COMPARE, SO IT DOESNT TELL THAT THE MODEL IS GOOD, IMPROVE THIS
-# IF yes, we can try and explore some of the state - Thompson Sampling for the bandit
-
-
-# Change April 18th
-# Fix the manual edit, like who challenge who button every single time, for example P2 select steal, and then model came up like is anybody challenge or something Manually revealed/challenge button the simulation, by edit it.
-# Manually set the player as the main character, for example me as P2 or P3, maybe before the game I will be Pth and then start the game. And me, ith Player who will try to observe the game
-# And remember, if a player exchanges card, the probability might be distrubed, I dont really know
-# If any plan or future improvement, please let me know or ask me
