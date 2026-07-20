@@ -3,6 +3,11 @@ from __future__ import annotations
 from typing import Literal
 
 from pydantic import BaseModel
+try:
+    from coup.ev_tree import compute_all_ev as _compute_all_ev
+    _EV_TREE_AVAILABLE = True
+except ImportError:
+    _EV_TREE_AVAILABLE = False
 
 
 class ClaimContext(BaseModel):
