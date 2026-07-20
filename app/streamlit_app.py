@@ -1866,7 +1866,26 @@ def _advisor_brief(engine, *, perspective, style):
         state = players[name]
         coins = int(state.coins)
         influence = int(state.influence_alive)
-        return (2.0 * influence) + coins
+        probs = belief.get(name, {})
+
+        # Kill bonus: massive priority for finishing off a 1-influence player
+        kill_bonus = 6.0 if influence == 1 else 0.0
+
+        # Coin threat: urgency based on how close they are to Coup
+        coin_threat = coins / 3.0
+
+        # Role danger to ME specifically:
+        # If they have Assassin + 3 coins, they can kill me next turn
+        me_state = players.get(perspective)
+        my_influence = int(me_state.influence_alive) if me_state else 2
+        assassin_danger = 0.0
+        if coins >= 3 and my_influence <= 1:
+            assassin_danger = float(probs.get(Role.ASSASSIN, 0.0)) * 3.0
+
+        # General board presence
+        board_presence = float(influence)
+
+        return kill_bonus + coin_threat + assassin_danger + board_presence
 
     ranked_targets = sorted(alive_opponents, key=opponent_threat, reverse=True)
     best_target = ranked_targets[0] if ranked_targets else None
