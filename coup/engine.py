@@ -39,6 +39,9 @@ class GameEngine:
         self.belief_state = BeliefState.fresh(player_names)
         self.strict_no_duplicate_hand = strict_no_duplicate_hand
         self.self_pin = None
+        from coup.bluff_tracker import BluffTracker
+
+        self.bluff_tracker = BluffTracker()
 
     def set_self_pin(self, player, hand):
         if player is None:
@@ -47,6 +50,7 @@ class GameEngine:
             self.self_pin = (player, list(hand))
 
     def apply_event(self, event):
+        self._update_bluff_tracker(event)
         self._apply_public(event)
         apply_belief_event(
             self.belief_state,
@@ -84,3 +88,25 @@ class GameEngine:
             return
         player_state.influence_alive = max(0, int(player_state.influence_alive) - 1)
         self.public_state.revealed_dead[role] = int(self.public_state.revealed_dead.get(role, 0)) + 1
+
+    def _update_bluff_tracker(self, event):
+        from coup.models import ActionEvent, BlockEvent, ChallengeEvent
+        from coup.rules import ACTION_ROLE_MULTIPLIERS, BLOCK_MULTIPLIERS
+
+        if isinstance(event, ActionEvent):
+            entry = ACTION_ROLE_MULTIPLIERS.get(event.action_name)
+            if entry:
+                role, _ = entry
+                self.bluff_tracker.record_claim(event.actor, role)
+
+        elif isinstance(event, BlockEvent):
+            for role, _ in BLOCK_MULTIPLIERS.get(event.blocked_action, []):
+                self.bluff_tracker.record_claim(event.blocker, role)
+
+        elif isinstance(event, ChallengeEvent):
+            if event.result == "win":
+                # Challenged player proved their claim true
+                self.bluff_tracker.record_success(event.challenged, event.claimed_role)
+            else:
+                # Challenged player was bluffing
+                self.bluff_tracker.record_catch(event.challenged, event.claimed_role)
