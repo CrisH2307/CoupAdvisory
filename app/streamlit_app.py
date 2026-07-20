@@ -356,6 +356,10 @@ if "strict_no_duplicate_hand" not in st.session_state:
     st.session_state.strict_no_duplicate_hand = False
 if "advisor_style" not in st.session_state:
     st.session_state.advisor_style = "Balanced"
+if "engine_snapshots" not in st.session_state:
+    st.session_state.engine_snapshots = {}
+if "snapshot_events_key" not in st.session_state:
+    st.session_state.snapshot_events_key = None
 
 
 def _render_top_controls():
@@ -1736,30 +1740,63 @@ def _render_simulator_controls(strict_no_duplicate_hand):
     )
 
 
-def _build_engine(events, end_index, strict_no_duplicate_hand):
+def _get_or_build_snapshots(events, strict_no_duplicate_hand):
+    """
+    Build and cache an ordered list of GameEngine snapshots — one per event.
+    Re-builds only when events or strict_mode changes.
+    Returns list where snapshots[i] is the engine state AFTER events[0..i].
+    snapshots[-1] is reserved as the empty engine (before any events).
+    """
+    import copy
+
+    # Use a simple cache key: (event count, strict_mode, hash of last event)
+    last_event_sig = repr(events[-1]) if events else ""
+    cache_key = (len(events), strict_no_duplicate_hand, last_event_sig)
+
+    if st.session_state.get("snapshot_events_key") == cache_key:
+        cached = st.session_state.get("engine_snapshots")
+        if cached is not None:
+            return cached
+
+    # Build from scratch
     base_players = list(_configured_players())
-
-    if end_index < 0:
-        players = list(base_players)
-        inferred = infer_players(events)
-        for name in inferred:
-            if name not in players:
-                players.append(name)
-        if not players:
-            players = _default_player_names(4)
-        return GameEngine(players, strict_no_duplicate_hand=strict_no_duplicate_hand)
-
-    sub_events = events[: end_index + 1]
-    players = list(base_players)
-    inferred = infer_players(sub_events)
+    inferred = infer_players(events)
     for name in inferred:
-        if name not in players:
-            players.append(name)
-    if not players:
-        players = _default_player_names(4)
-    engine = GameEngine(players, strict_no_duplicate_hand=strict_no_duplicate_hand)
-    engine.replay(sub_events)
-    return engine
+        if name not in base_players:
+            base_players.append(name)
+    if not base_players:
+        base_players = _default_player_names(4)
+
+    # Index 0 = engine before any events (empty state)
+    snapshots = []
+    engine = GameEngine(base_players, strict_no_duplicate_hand=strict_no_duplicate_hand)
+    snapshots.append(copy.deepcopy(engine))
+
+    for event in events:
+        engine.apply_event(event)
+        snapshots.append(copy.deepcopy(engine))
+
+    st.session_state.engine_snapshots = snapshots
+    st.session_state.snapshot_events_key = cache_key
+    return snapshots
+
+
+def _build_engine(events, end_index, strict_no_duplicate_hand):
+    """
+    Return engine state at end_index using pre-built snapshots when available.
+    snapshots[0] = empty engine, snapshots[i+1] = after event i.
+    end_index=-1 returns the empty engine. end_index=k returns engine after events[0..k].
+    """
+    if not events:
+        base_players = list(_configured_players()) or _default_player_names(4)
+        return GameEngine(base_players, strict_no_duplicate_hand=strict_no_duplicate_hand)
+
+    snapshots = _get_or_build_snapshots(events, strict_no_duplicate_hand)
+
+    # snapshots[0] = before events, snapshots[k+1] = after event k
+    snapshot_index = end_index + 1   # end_index=-1 → 0 (empty), end_index=k → k+1
+    snapshot_index = max(0, min(snapshot_index, len(snapshots) - 1))
+    return snapshots[snapshot_index]
 
 
 def _clamp(value, low=0.0, high=1.0):
