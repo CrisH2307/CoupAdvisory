@@ -1465,6 +1465,86 @@ def _render_add_event_form():
             except Exception as exc:  # noqa: BLE001
                 st.error(f"Invalid raw event: {exc}")
 
+def _render_belief_trajectory(events, strict_no_duplicate_hand):
+    """
+    Render a line chart showing how a selected player's role probabilities
+    evolved across all events in the game.
+
+    Allows user to select a player and which roles to show.
+    """
+    import pandas as pd
+
+    if not events:
+        return
+
+    _render_section_badge("Belief Trajectory")
+
+    # Build all engine states (reuse snapshots if available from cache)
+    snapshots = []
+    try:
+        snapshots = _get_or_build_snapshots(events, strict_no_duplicate_hand)
+    except Exception:
+        # Fallback: build from scratch
+        base_players = list(_configured_players()) or _default_player_names(4)
+        engine = GameEngine(base_players, strict_no_duplicate_hand=strict_no_duplicate_hand)
+        snapshots = [_deepcopy_engine(engine)]
+        for event in events:
+            engine.apply_event(event)
+            snapshots.append(_deepcopy_engine(engine))
+
+    alive_players = sorted(
+        name for name, state in snapshots[-1].public_state.players.items()
+        if int(state.influence_alive) > 0 or name in snapshots[0].belief_state.probabilities
+    )
+    if not alive_players:
+        st.caption("No player data for trajectory chart.")
+        return
+
+    col_a, col_b = st.columns([1, 3])
+    with col_a:
+        selected_player = st.selectbox(
+            "Player",
+            alive_players,
+            key="trajectory_player",
+        )
+        selected_roles = st.multiselect(
+            "Roles",
+            [role.value for role in Role],
+            default=[Role.DUKE.value, Role.CAPTAIN.value],
+            key="trajectory_roles",
+        )
+
+    if not selected_roles:
+        st.caption("Select at least one role to display.")
+        return
+
+    # Build trajectory data: one row per event
+    rows = []
+    for i, snapshot in enumerate(snapshots):
+        probs = snapshot.belief_state.probabilities.get(selected_player, {})
+        row = {"Event": i}
+        for role_value in selected_roles:
+            try:
+                role = Role(role_value)
+                row[role_value] = float(probs.get(role, 0.0))
+            except ValueError:
+                row[role_value] = 0.0
+        rows.append(row)
+
+    df = pd.DataFrame(rows).set_index("Event")
+
+    with col_b:
+        st.line_chart(df, use_container_width=True)
+        st.caption(
+            f"Belief trajectory for {selected_player}. "
+            "Each point is one event. Spikes show claim detection; drops show bluff reveals."
+        )
+
+
+def _deepcopy_engine(engine):
+    import copy
+    return copy.deepcopy(engine)
+
 
 def _render_replay(events_raw, *, strict_no_duplicate_hand, prefix):
     if not events_raw:
@@ -1647,6 +1727,7 @@ def _render_replay(events_raw, *, strict_no_duplicate_hand, prefix):
 
     _render_section_badge("Belief Table")
     st.dataframe(_belief_table(engine_after), use_container_width=True)
+    _render_belief_trajectory(events, strict_no_duplicate_hand=strict_no_duplicate_hand)
 
     _render_section_badge("Event Log")
     event_rows = [_event_row(event) for event in events]
