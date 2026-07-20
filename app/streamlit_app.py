@@ -1465,6 +1465,55 @@ def _render_add_event_form():
             except Exception as exc:  # noqa: BLE001
                 st.error(f"Invalid raw event: {exc}")
 
+def _render_belief_delta(engine_before, engine_after):
+    """
+    Display a compact table showing how each player's role probabilities
+    changed between two engine states (before and after an event).
+    Uses color-coded arrows: ↑ for increases, ↓ for decreases.
+    """
+    _render_section_badge("Belief Δ (Change from this event)")
+
+    before_probs = engine_before.belief_state.probabilities
+    after_probs = engine_after.belief_state.probabilities
+
+    all_players = sorted(set(before_probs.keys()) | set(after_probs.keys()))
+    roles = list(Role)
+
+    delta_rows = []
+    for player in all_players:
+        after_state = engine_after.public_state.players.get(player)
+        if after_state and int(after_state.influence_alive) <= 0:
+            continue  # skip eliminated players
+
+        row = {"Player": player}
+        has_delta = False
+        for role in roles:
+            p_before = float(before_probs.get(player, {}).get(role, 0.0))
+            p_after = float(after_probs.get(player, {}).get(role, 0.0))
+            delta = p_after - p_before
+
+            if abs(delta) < 0.005:
+                row[role.value] = f"{p_after:.2f}"
+            elif delta > 0:
+                row[role.value] = f"{p_after:.2f} ↑{delta:+.2f}"
+                has_delta = True
+            else:
+                row[role.value] = f"{p_after:.2f} ↓{delta:+.2f}"
+                has_delta = True
+
+        if has_delta:
+            delta_rows.append(row)
+
+    if not delta_rows:
+        st.caption("No significant belief changes from this event.")
+        return
+
+    import pandas as pd
+
+    df = pd.DataFrame(delta_rows).set_index("Player")
+    st.dataframe(df, use_container_width=True)
+    st.caption("↑ probability increased · ↓ probability decreased · values < 0.005 shown as stable")
+
 
 def _render_replay(events_raw, *, strict_no_duplicate_hand, prefix):
     if not events_raw:
@@ -1638,6 +1687,8 @@ def _render_replay(events_raw, *, strict_no_duplicate_hand, prefix):
                 st.write(f"- {warning}")
         else:
             st.success("No validation warnings")
+        st.divider()
+        _render_belief_delta(engine_before, engine_after)
 
     _render_section_badge("Public State")
     st.dataframe(_public_state_table(engine_after), use_container_width=True)
