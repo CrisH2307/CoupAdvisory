@@ -137,18 +137,41 @@ def _apply_global_count_constraint(belief, public_state):
         scale = remaining / expected
         # Cap scale: don't inflate beyond 2.0 or deflate below 0.0
         scale = max(0.0, min(scale, 2.0))
+        # Only deflate overrepresented roles in this pass.
+        if scale >= 1.0:
+            continue
         if abs(scale - 1.0) < 1e-6:
             continue
 
         for name in alive_players:
             if name not in belief.probabilities:
                 continue
-            old_p = float(belief.probabilities[name].get(role, 0.0))
-            belief.probabilities[name][role] = old_p * scale
+            probs = belief.probabilities[name]
+            old_p = float(probs.get(role, 0.0))
+            new_p = max(0.0, min(old_p * scale, 1.0))
 
-        # Re-normalize each player so their probabilities sum to 1
-        for name in alive_players:
-            _normalize_player(belief, name)
+            other_total = 0.0
+            for other_role in Role:
+                if other_role == role:
+                    continue
+                other_total += float(probs.get(other_role, 0.0))
+
+            target_other_total = max(0.0, 1.0 - new_p)
+            if other_total > 0.0:
+                other_scale = target_other_total / other_total
+                for other_role in Role:
+                    if other_role == role:
+                        continue
+                    probs[other_role] = float(probs.get(other_role, 0.0)) * other_scale
+            else:
+                fill = target_other_total / float(max(1, len(Role) - 1))
+                for other_role in Role:
+                    if other_role == role:
+                        continue
+                    probs[other_role] = fill
+
+            probs[role] = new_p
+            belief.scores[name] = dict(probs)
 
 
 def _normalize_player(belief, player):
