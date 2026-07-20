@@ -40,7 +40,12 @@ def recommend_challenge(
     p_role_c = _clamp(p_role, 0.0, 1.0)
     p_truth = 1.0 - (1.0 - p_role_c) ** hand_size
 
-    threshold = _threshold_for_claim(claim_context, style=style)
+    threshold = _threshold_for_claim(
+        claim_context,
+        style=style,
+        public_state=public_state,
+        perspective=claimant,
+    )
     if p_truth < threshold:
         recommendation = "Challenge"
     else:
@@ -60,7 +65,24 @@ def recommend_challenge(
     )
 
 
-def _threshold_for_claim(claim_context, *, style="Balanced"):
+def _threshold_for_claim(
+    claim_context,
+    *,
+    style="Balanced",
+    public_state=None,
+    perspective: str | None = None,
+):
+    """
+    Compute the p_truth threshold above which we do NOT challenge.
+    Lower threshold = more willing to challenge (need less certainty).
+    Higher threshold = less willing to challenge (need more certainty).
+
+    Adjustments applied on top of a base value:
+    - Style delta (conservative/balanced/aggressive)
+    - Game pressure: fewer alive players → +delta (more aggressive)
+    - Vulnerability: perspective player has 1 influence → -delta (more cautious)
+    - Opponent threat: any opponent at 7+ coins → +delta (time pressure)
+    """
     remaining = int(claim_context.remaining_copies)
     if remaining <= 0:
         base = 0.99
@@ -74,6 +96,37 @@ def _threshold_for_claim(claim_context, *, style="Balanced"):
         base = 0.25
 
     adjusted = float(base) + _style_threshold_delta(style)
+
+    # Game-state adjustments
+    if public_state is not None:
+        alive_players = [
+            name for name, state in public_state.players.items()
+            if int(state.influence_alive) > 0
+        ]
+        num_alive = len(alive_players)
+
+        # Fewer players → raise threshold (more aggressive challenges)
+        if num_alive <= 2:
+            adjusted += 0.10
+        elif num_alive <= 3:
+            adjusted += 0.05
+
+        # Perspective player's vulnerability
+        if perspective is not None and perspective in public_state.players:
+            my_influence = int(public_state.players[perspective].influence_alive)
+            if my_influence == 1:
+                # One life left: be conservative, require stronger evidence before challenging
+                adjusted -= 0.08
+
+        # Opponent threat pressure: if any opponent can Coup next turn
+        for name in alive_players:
+            if perspective and name == perspective:
+                continue
+            opp_coins = int(public_state.players[name].coins)
+            if opp_coins >= 7:
+                # They're already in coup range; raise threshold to challenge more
+                adjusted += 0.06
+                break  # only apply once
     return _clamp(adjusted, 0.01, 0.99)
 
 
