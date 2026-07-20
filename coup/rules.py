@@ -14,6 +14,26 @@ BLOCK_MULTIPLIERS = {
     "Assassination": [(Role.CONTESSA, 2.0)],
     "Steal": [(Role.CAPTAIN, 1.6), (Role.AMBASSADOR, 1.6)],
 }
+# Bayesian likelihood ratios for belief updates.
+# Ratio = P(makes_claim | has_role) / P(makes_claim | lacks_role)
+# Honest rate ~0.85, bluff rate ~0.15 -> ratio = 5.67
+# Challenge win  -> ~10x confirmation  (near-certain evidence)
+# Challenge loss -> ~0.05x (near-certain disconfirmation)
+ACTION_LIKELIHOOD_RATIOS = {
+    "Tax": ("Duke", 5.7),
+    "Assassinate": ("Assassin", 5.7),
+    "Steal": ("Captain", 5.7),
+    "Exchange": ("Ambassador", 5.7),
+}
+
+BLOCK_LIKELIHOOD_RATIOS = {
+    "Foreign Aid": [("Duke", 5.7)],
+    "Assassination": [("Contessa", 5.7)],
+    "Steal": [("Captain", 4.5), ("Ambassador", 4.5)],
+}
+
+CHALLENGE_WIN_RATIO = 10.0
+CHALLENGE_LOSE_RATIO = 0.05
 
 
 def action_claim_role(action_name):

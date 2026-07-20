@@ -54,27 +54,35 @@ def _apply_self_pin(belief, public_state, self_pin):
 def _apply_action_multiplier(belief, event):
     if event.actor not in belief.scores:
         return
-    entry = ACTION_ROLE_MULTIPLIERS.get(event.action_name)
+    from coup.rules import ACTION_LIKELIHOOD_RATIOS
+    entry = ACTION_LIKELIHOOD_RATIOS.get(event.action_name)
     if entry is None:
         return
-    role, factor = entry
-    belief.scores[event.actor][role] *= float(factor)
+    role_name, ratio = entry
+    # Convert string role name to Role enum for dict key lookup
+    from coup.models import Role
+    role = Role(role_name)
+    belief.scores[event.actor][role] *= float(ratio)
 
 
 def _apply_block_multiplier(belief, event):
     if event.blocker not in belief.scores:
         return
-    for role, factor in BLOCK_MULTIPLIERS.get(event.blocked_action, []):
-        belief.scores[event.blocker][role] *= float(factor)
+    from coup.rules import BLOCK_LIKELIHOOD_RATIOS
+    from coup.models import Role
+    for role_name, ratio in BLOCK_LIKELIHOOD_RATIOS.get(event.blocked_action, []):
+        role = Role(role_name)
+        belief.scores[event.blocker][role] *= float(ratio)
 
 
 def _apply_challenge_multiplier(belief, event):
     if event.challenged not in belief.scores:
         return
+    from coup.rules import CHALLENGE_WIN_RATIO, CHALLENGE_LOSE_RATIO
     if event.result == "win":
-        scale = 10.0
+        scale = CHALLENGE_WIN_RATIO
     else:
-        scale = 0.01
+        scale = CHALLENGE_LOSE_RATIO
     belief.scores[event.challenged][event.claimed_role] *= scale
 
 
