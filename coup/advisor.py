@@ -3,6 +3,11 @@ from __future__ import annotations
 from typing import Literal
 
 from pydantic import BaseModel
+try:
+    from coup.ev_tree import compute_all_ev as _compute_all_ev
+    _EV_TREE_AVAILABLE = True
+except ImportError:
+    _EV_TREE_AVAILABLE = False
 
 
 class ClaimContext(BaseModel):
@@ -38,9 +43,15 @@ def recommend_challenge(
     if hand_size is None or hand_size < 1:
         hand_size = 1
     p_role_c = _clamp(p_role, 0.0, 1.0)
-    p_truth = 1.0 - (1.0 - p_role_c) ** hand_size
+    remaining_copies = int(claim_context.remaining_copies)
+    p_truth = _hypergeometric_p_truth(p_role_c, hand_size, remaining_copies)
 
-    threshold = _threshold_for_claim(claim_context, style=style)
+    threshold = _threshold_for_claim(
+        claim_context,
+        style=style,
+        public_state=public_state,
+        perspective=claimant,
+    )
     if p_truth < threshold:
         recommendation = "Challenge"
     else:
@@ -60,7 +71,24 @@ def recommend_challenge(
     )
 
 
-def _threshold_for_claim(claim_context, *, style="Balanced"):
+def _threshold_for_claim(
+    claim_context,
+    *,
+    style="Balanced",
+    public_state=None,
+    perspective: str | None = None,
+):
+    """
+    Compute the p_truth threshold above which we do NOT challenge.
+    Lower threshold = more willing to challenge (need less certainty).
+    Higher threshold = less willing to challenge (need more certainty).
+
+    Adjustments applied on top of a base value:
+    - Style delta (conservative/balanced/aggressive)
+    - Game pressure: fewer alive players → +delta (more aggressive)
+    - Vulnerability: perspective player has 1 influence → -delta (more cautious)
+    - Opponent threat: any opponent at 7+ coins → +delta (time pressure)
+    """
     remaining = int(claim_context.remaining_copies)
     if remaining <= 0:
         base = 0.99
@@ -74,6 +102,37 @@ def _threshold_for_claim(claim_context, *, style="Balanced"):
         base = 0.25
 
     adjusted = float(base) + _style_threshold_delta(style)
+
+    # Game-state adjustments
+    if public_state is not None:
+        alive_players = [
+            name for name, state in public_state.players.items()
+            if int(state.influence_alive) > 0
+        ]
+        num_alive = len(alive_players)
+
+        # Fewer players → raise threshold (more aggressive challenges)
+        if num_alive <= 2:
+            adjusted += 0.10
+        elif num_alive <= 3:
+            adjusted += 0.05
+
+        # Perspective player's vulnerability
+        if perspective is not None and perspective in public_state.players:
+            my_influence = int(public_state.players[perspective].influence_alive)
+            if my_influence == 1:
+                # One life left: be conservative, require stronger evidence before challenging
+                adjusted -= 0.08
+
+        # Opponent threat pressure: if any opponent can Coup next turn
+        for name in alive_players:
+            if perspective and name == perspective:
+                continue
+            opp_coins = int(public_state.players[name].coins)
+            if opp_coins >= 7:
+                # They're already in coup range; raise threshold to challenge more
+                adjusted += 0.06
+                break  # only apply once
     return _clamp(adjusted, 0.01, 0.99)
 
 
@@ -101,3 +160,57 @@ def _clamp(value, low=0.0, high=1.0):
     if value > high:
         return float(high)
     return float(value)
+
+
+def _hypergeometric_p_truth(p_role: float, hand_size: int, remaining_copies: int, deck_size: int = 15) -> float:
+    """
+    Compute P(player has at least one copy of the role in hand) using the
+    hypergeometric distribution, which correctly models sampling without
+    replacement from a finite deck.
+
+    Args:
+        p_role: The current belief probability for this role (used to derive
+                an effective 'remaining copies in unobserved deck').
+        hand_size: Number of cards the player currently holds (influence_alive).
+        remaining_copies: How many copies of this role remain in the game
+                          (not yet revealed as dead).
+        deck_size: Approximate total unobserved cards in circulation.
+                   Default 15 = 5 roles × 3 copies.
+
+    Returns:
+        Probability in [0, 1] that the player holds at least one of this role.
+    """
+    from math import comb
+
+    remaining_copies = max(0, int(remaining_copies))
+    hand_size = max(1, int(hand_size))
+    deck_size = max(hand_size, int(deck_size))
+
+    # If no copies remain, claim is impossible
+    if remaining_copies <= 0:
+        return 0.0
+
+    # If more copies remain than non-copies, probability is 1
+    non_copies = deck_size - remaining_copies
+    if non_copies < 0:
+        return 1.0
+
+    # P(player has 0 copies) = C(non_copies, hand_size) / C(deck_size, hand_size)
+    if hand_size > non_copies:
+        # Can't draw hand_size cards from non_copies without replacement
+        p_zero = 0.0
+    elif hand_size > deck_size:
+        p_zero = 0.0
+    else:
+        numerator = comb(non_copies, hand_size)
+        denominator = comb(deck_size, hand_size)
+        p_zero = numerator / denominator if denominator > 0 else 0.0
+
+    # Blend with the belief-derived estimate for robustness when deck_size
+    # approximation is inaccurate (low information games).
+    # Weight: 0.7 hypergeometric + 0.3 belief-derived (independence formula)
+    p_hyper = 1.0 - p_zero
+    p_independence = 1.0 - (1.0 - _clamp(p_role)) ** hand_size
+    p_blended = 0.7 * p_hyper + 0.3 * p_independence
+
+    return _clamp(p_blended)
